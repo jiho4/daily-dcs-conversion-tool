@@ -1,5 +1,5 @@
-base_digit: 4  # example: 1000 = 4 digits
-output_separator: '\t'
+base_digit: 4  # digit modifier for current currency / example: 1000 = 4 digits
+output_separator: '\t'  # join data lists into string with this separator
 
 # define kinds of keywords
 keywords: d, f, t, u
