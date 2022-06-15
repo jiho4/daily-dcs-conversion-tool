@@ -1,0 +1,2 @@
+base_digit: 4  # example: 1000 = 4 digits
+output_separator: '\t'

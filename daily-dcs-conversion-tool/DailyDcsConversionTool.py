@@ -1,29 +1,30 @@
-from typing import Final
+from collections import deque
+
+import Compose
 import Input
 import Key
+import Parse
 
 
 class DailyDcsConversionTool:
-    # digit modifier for current currency
-    BASE_DIGIT: Final = 4
-
-    # remember the current line of input string
-    lineTracker = 0
-
-    # the last day of this month
-    lastDay: Final
-
-    # current processing date
-    currentDate = 0
-
     # arrays containing the data of keywords
-    keyData = [None] * len(Key.Key)
-    keyOrigTexts = [None] * len(Key.Key)
+    key_data = dict()
+    key_orig_texts = dict()
 
     # array containing the other data
-    etcData = []
+    other_data = dict()
 
+    # initialize key lists
+    for Keyword in Key.Keywords:
+        key_data[Keyword.name] = deque([])
+        key_orig_texts[Keyword.name] = deque([])
+
+    #################################
     # main TODO: edit the structure of main function
-    dailyText = Input.input_string()
+    daily_text = Input.input_string()
 
-    print(dailyText)
+    Parse.parse_daily_text(daily_text, key_data, key_orig_texts, other_data)
+
+    Compose.compose_output_text(key_data, key_orig_texts, other_data)
+
+    # Output.print_text

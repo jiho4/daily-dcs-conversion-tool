@@ -1,5 +1,6 @@
 def input_string():
     daily_text = []
+
     print("* Paste the entire daily text, and press Cmd+D or Ctrl-D or Ctrl-Z ( windows ) to commit.")
     while True:
         try:
