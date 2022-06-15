@@ -1,2 +1,6 @@
 base_digit: 4  # example: 1000 = 4 digits
 output_separator: '\t'
+
+# define kinds of keywords
+keywords: d, f, t, u
+int_keywords: u

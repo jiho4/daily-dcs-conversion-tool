@@ -1,17 +1,14 @@
 from typing import Final
-import Key
+import key
 import yaml
 
 with open('resources/config.yml') as f:
     conf = yaml.safe_load(f)
 
 
-def parse_daily_text(daily_text: [], key_data: dict(), key_orig_texts: dict(), other_data: dict()):
+def parse_daily_text(daily_text: [], data):
     # remember the current line of input string
     line_tracker: int = 0
-
-    # the last day of this month
-    last_day: int = -1  # TODO: do I need it?
 
     # current processing date
     current_date: int = 0
@@ -46,14 +43,15 @@ def parse_daily_text(daily_text: [], key_data: dict(), key_orig_texts: dict(), o
             if last_day == -1:  # update only once
                 last_day = int(line[0])
                 for i in range(0, last_day):
-                    other_data[i] = []
+                    data.other_data[i] = []
 
         # keyword line
         elif is_keyword_line(line):
-            parse_keyword_line(line, key_data, key_orig_texts)
+            parse_keyword_line(line, data.key_data, data.key_orig_texts)
+
         # memo lines
         else:
-            other_data[current_date] = line
+            data.other_data[current_date] = line
 
 
 def check_validation_of_line(line: [], num_of_all_line: int, line_tracker: int
@@ -74,7 +72,7 @@ def is_date_line(line: []) -> bool:
 
 
 def is_keyword_line(line: []) -> bool:
-    if len(line) > 1 and line[0] in Key.Keywords.__members__ and is_number(line[1]):
+    if len(line) > 1 and line[0] in key.KEYWORDS and is_number(line[1]):
         return True
     else:
         return False
@@ -91,7 +89,7 @@ def parse_keyword_line(line: [], key_data: [], key_orig_texts: []):
         if is_number(word):
             sum_num += float(word)
 
-    if keyword not in Key.IntKeywords.__members__:
+    if keyword not in key.INT_KEYWORDS:
         sum_num /= 10 ** (base_digit - 1)  # divide sum by base digit
 
     key_data[keyword].appendleft(sum_num)
