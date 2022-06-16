@@ -16,6 +16,7 @@ eggs/
 .eggs/
 lib/
 lib64/
+output/
 parts/
 sdist/
 var/
@@ -26,6 +27,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.DS_Store*
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -109,6 +111,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Idea project settings
+/.idea/
 
 # Spyder project settings
 .spyderproject
