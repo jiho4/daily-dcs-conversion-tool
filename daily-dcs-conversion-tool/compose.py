@@ -12,7 +12,7 @@ def __compose_keyword_part(key_data, key_orig_texts, keyword_part):
 
     # TODO: add error handling and logging
     # iterate by date (each row consists of data for each date)
-    for current_date in range(1, len(key_data)):
+    for current_date in range(1, len(key_data) + 1):
         keyword_part[current_date] = [current_date]
 
         for keyword in key.KEYWORDS:
@@ -34,7 +34,7 @@ def __compose_keyword_header_row(keyword_part):
 
     for keyword in key.KEYWORDS:
         keyword_part[0].append(keyword)
-        keyword_part[0].append(keyword + 'detail')
+        keyword_part[0].append(keyword + '-detail')
 
 
 def __compose_memo_part(memo_data, memo_part):

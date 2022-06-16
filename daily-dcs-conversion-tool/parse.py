@@ -55,18 +55,18 @@ def parse_daily_text(daily_text: [], data):
             __parse_keyword_line(line, current_date, data.key_data, data.key_orig_texts)
 
         # memo line
-        else:
+        elif len(line) > 0:
             data.memo_data[current_date].append(line)
 
 
 def __check_validation_of_line(line: [], num_of_all_line: int, line_tracker: int
                                , current_date: int, prev_line_was_blank: bool):
     if prev_line_was_blank is True and __is_date_line(line) is False:
-        raise  # TODO: line after blank line should be date line
+        raise print_error_log(line, line_tracker, current_date)  # TODO: line after blank line should be date line
     elif line_tracker == num_of_all_line and current_date != 1:
-        raise  # TODO: reached EOF but processed date is not 1
-    elif __is_date_line(line) is True and int(line[0]) == current_date - 1:
-        raise  # TODO: date should be decreasing by 1
+        raise print_error_log(line, line_tracker, current_date)  # TODO: reached EOF but processed date is not 1
+    elif __is_date_line(line) is True and current_date != 0 and int(line[0]) != current_date - 1:
+        raise print_error_log(line, line_tracker, current_date)  # TODO: date should be decreasing by 1
 
 
 def __is_date_line(line: []) -> bool:
@@ -98,7 +98,7 @@ def __parse_keyword_line(line: [], current_date: int, key_data: [], key_orig_tex
         sum_num /= 10 ** (base_digit - 1)  # divide sum by base digit
 
     # since same keyword lines can exist in the same date
-    if key_data[current_date][keyword] == {}:
+    if not key_data[current_date].get(keyword):
         key_data[current_date][keyword] = sum_num
         key_orig_texts[current_date][keyword] = line.copy()
     else:
@@ -115,6 +115,6 @@ def __is_number(s: str) -> bool:
 # TODO: separate it to error handling py file
 # print processing data when error occurred
 def print_error_log(line: [], line_tracker: int, current_date: int):
-    print("processing line: " + line_tracker)
-    print("processing date: " + current_date)
-    print("processing line data: " + line)
+    print("processing line: " + str(line_tracker))
+    print("processing date: " + str(current_date))
+    print("processing line data: " + ' '.join(line))
