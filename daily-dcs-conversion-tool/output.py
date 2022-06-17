@@ -7,6 +7,7 @@ with open('resources/config.yml') as f1:
     conf = yaml.safe_load(f1)
 
 
+# write output_data into CSV file
 def print_text_as_csv(output_data):
     filename = conf['output_base_filename'] + '-' + time.strftime(conf['output_filename_time_format']) + '.csv'
     path = conf['output_directory'] + filename
@@ -18,6 +19,7 @@ def print_text_as_csv(output_data):
     with open(path, 'w', encoding='utf-8', newline='') as f2:
         writer = csv.writer(f2, delimiter=conf['output_delimiter'], quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
 
+        # write keyword part first
         __write_keyword_part(writer, output_data.keyword_part)
 
         # add a simple horizontal rule
@@ -27,11 +29,13 @@ def print_text_as_csv(output_data):
         __write_memo_part(writer, output_data.memo_part)
 
 
+# write keyword part
 def __write_keyword_part(writer, keyword_part):
     for row_num in range(0, len(keyword_part)):
         writer.writerow(keyword_part[row_num])
 
 
+# write memo part
 def __write_memo_part(writer, memo_part):
     current_date = 1
 

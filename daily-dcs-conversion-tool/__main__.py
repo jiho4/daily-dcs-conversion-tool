@@ -5,7 +5,11 @@ import output
 import parse
 
 
-# TODO: need to add logging
+# TODO: add env for config.yml (dev, prod)
+# TODO: add deployment settings
+# TODO: add logging
+# TODO: add test
+# TODO: add error handling
 def main():
     # declare model classes
     parsed_data = data.ParsedData()
