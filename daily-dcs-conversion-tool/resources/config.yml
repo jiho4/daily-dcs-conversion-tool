@@ -1,5 +1,5 @@
 # digit modifier for current currency / example: 1000 = 4 digits
-base_digit: 5
+base_digit: 2
 
 # output csv setting
 output_delimiter: "\t"  # it returns error when using '\t' or just \t
@@ -8,5 +8,5 @@ output_base_filename: daily-dcs-converted
 output_filename_time_format: '%Y-%m-%d-%H%M%S'
 
 # define kinds of keywords
-keywords: e, sv, svv, w, q, qq, qqq, tr, pk, xp, t, v, sc, r, f, hm, d, dd, i, ps, u, z, j, pn
-int_keywords: u, z, j, pn
+keywords: e, ee, sv, svv, w, q, qq, qqq, tr, pk, xp, t, v, sc, r, f, hm, d, dd, i, dt, ps, u, z, j, jj, pn
+int_keywords: u, z, j, jj, pn

@@ -26,7 +26,7 @@ def __compose_keyword_part(available_keywords, key_data, key_orig_texts, keyword
             # append data of keywords exist in this month
             if keyword in available_keywords:
                 # check if keyword exists on current date
-                if key_data[current_date].get(keyword):
+                if keyword in key_data[current_date]:
                     sum_data = key_data[current_date][keyword]
                     if sum_data.is_integer():
                         sum_data = int(sum_data)

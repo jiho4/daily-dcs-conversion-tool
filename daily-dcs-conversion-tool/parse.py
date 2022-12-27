@@ -112,7 +112,7 @@ def __parse_keyword_line(line: [], current_date: int
         sum_num /= 10 ** (base_digit - 1)  # divide sum by base digit
 
     # since same keyword lines can exist in the same date
-    if not key_data[current_date].get(keyword):
+    if keyword not in key_data[current_date]:
         key_data[current_date][keyword] = sum_num
         key_orig_texts[current_date][keyword] = line.copy()
     else:

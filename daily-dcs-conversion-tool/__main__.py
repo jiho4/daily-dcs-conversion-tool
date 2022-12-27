@@ -5,6 +5,8 @@ import output
 import parse
 
 
+# TODO: toFix) error occurs when there is a blank line at the start
+# TODO: sometimes linefeed is not working. better to convert all possible linefeed in input.py
 # TODO: add env for config.yml (dev, prod)
 # TODO: add deployment settings
 # TODO: add logging
