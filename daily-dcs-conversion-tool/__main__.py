@@ -1,21 +1,18 @@
 import compose
-import data
 import input
 import output
 import parse
+from model import data_model
 
 
-# TODO: toFix) error occurs when there is a blank line at the start
-# TODO: sometimes linefeed is not working. better to convert all possible linefeed in input.py
-# TODO: add env for config.yml (dev, prod)
 # TODO: add deployment settings
 # TODO: add logging
 # TODO: add test
 # TODO: add error handling
 def main():
     # declare model classes
-    parsed_data = data.ParsedData()
-    output_data = data.OutputData()
+    parsed_data = data_model.ParsedData()
+    output_data = data_model.OutputData()
 
     # get input data
     daily_text = input.input_string()

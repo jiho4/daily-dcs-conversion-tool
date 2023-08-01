@@ -4,17 +4,17 @@ import key
 # compose parsed_data into output_data
 def compose_output_text(parsed_data, output_data) -> []:
     # keyword part
-    __compose_keyword_part(parsed_data.available_keywords, parsed_data.key_data
-                           , parsed_data.key_orig_texts, output_data.keyword_part)
+    _compose_keyword_part(parsed_data.available_keywords, parsed_data.key_data
+                          , parsed_data.key_orig_texts, output_data.keyword_part)
 
     # memo part
-    __compose_memo_part(parsed_data.memo_data, output_data.memo_part)
+    _compose_memo_part(parsed_data.memo_data, output_data.memo_part)
 
 
 # compose keyword part
-def __compose_keyword_part(available_keywords, key_data, key_orig_texts, keyword_part):
+def _compose_keyword_part(available_keywords, key_data, key_orig_texts, keyword_part):
     # first, set a header row
-    __compose_keyword_header_row(available_keywords, keyword_part)
+    _compose_keyword_header_row(available_keywords, keyword_part)
 
     # TODO: add error handling and logging
     # iterate by date (each row consists of data for each date)
@@ -40,7 +40,7 @@ def __compose_keyword_part(available_keywords, key_data, key_orig_texts, keyword
 
 
 # compose a header row of keyword part
-def __compose_keyword_header_row(available_keywords, keyword_part):
+def _compose_keyword_header_row(available_keywords, keyword_part):
     keyword_part[0] = ['date']  # first column is date
 
     for keyword in key.KEYWORDS:
@@ -50,7 +50,7 @@ def __compose_keyword_header_row(available_keywords, keyword_part):
 
 
 # compose memo part
-def __compose_memo_part(memo_data, memo_part):
+def _compose_memo_part(memo_data, memo_part):
     for current_date in memo_data.keys():
         for memo_line in memo_data[current_date]:
             # memo_part has only two columns (date, memo)

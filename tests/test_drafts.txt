@@ -1,0 +1,16 @@
+# draft test cases
+##################
+
+# parse #
+two or more consecutive blank lines before initialized is accepted
+two or more consecutive blank lines after initialized should be error
+
+# util #
+# util > is_number()
+starts with 0 should be treated as string and returns False
+starts with positive num, but char is mixed returns False
+str returns False
+int returns True
+negative int returns True
+float returns True
+negative float returns True

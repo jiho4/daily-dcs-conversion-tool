@@ -1,42 +1,43 @@
 import csv
 import os.path
 import time
+
 import yaml
 
 with open('resources/config.yml') as f1:
-    conf = yaml.safe_load(f1)
+    __conf = yaml.safe_load(f1)
 
 
 # write output_data into CSV file
 def print_text_as_csv(output_data):
-    filename = conf['output_base_filename'] + '-' + time.strftime(conf['output_filename_time_format']) + '.csv'
-    path = conf['output_directory'] + filename
+    filename = __conf['output_base_filename'] + '-' + time.strftime(__conf['output_filename_time_format']) + '.csv'
+    path = __conf['output_directory'] + filename
 
     # create output directory if it does not exist
-    if not os.path.isdir(conf['output_directory']):
-        os.mkdir(conf['output_directory'])
+    if not os.path.isdir(__conf['output_directory']):
+        os.mkdir(__conf['output_directory'])
 
     with open(path, 'w', encoding='utf-8', newline='') as f2:
-        writer = csv.writer(f2, delimiter=conf['output_delimiter'], quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+        writer = csv.writer(f2, delimiter=__conf['output_delimiter'], quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
 
         # write keyword part first
-        __write_keyword_part(writer, output_data.keyword_part)
+        _write_keyword_part(writer, output_data.keyword_part)
 
         # add a simple horizontal rule
         writer.writerow(['====', '========'])
 
         # write memo part to the below keyword part
-        __write_memo_part(writer, output_data.memo_part)
+        _write_memo_part(writer, output_data.memo_part)
 
 
 # write keyword part
-def __write_keyword_part(writer, keyword_part):
+def _write_keyword_part(writer, keyword_part):
     for row_num in range(0, len(keyword_part)):
         writer.writerow(keyword_part[row_num])
 
 
 # write memo part
-def __write_memo_part(writer, memo_part):
+def _write_memo_part(writer, memo_part):
     current_date = 1
 
     for memo_data_row in memo_part:

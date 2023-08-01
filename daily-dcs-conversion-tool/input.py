@@ -10,4 +10,5 @@ def input_string():
             break
         # trim each lines
         daily_text.append(line.strip())
+
     return daily_text

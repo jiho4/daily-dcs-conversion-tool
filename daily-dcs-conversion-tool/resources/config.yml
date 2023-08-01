@@ -1,5 +1,10 @@
-# digit modifier for current currency / example: 1000 = 4 digits
-base_digit: 2
+base_digit: 4
+
+# digit modifiers for each currency / example: 1000 = 4 digits
+digits: { cad: 2, jpy: 4, krw: 5 }
+
+# currency identifier
+symbols: { $: cad , Y: jpy, ¥: jpy, ₩: krw }
 
 # output csv setting
 output_delimiter: "\t"  # it returns error when using '\t' or just \t
@@ -8,5 +13,5 @@ output_base_filename: daily-dcs-converted
 output_filename_time_format: '%Y-%m-%d-%H%M%S'
 
 # define kinds of keywords
-keywords: e, ee, sv, svv, w, q, qq, qqq, tr, pk, xp, t, v, sc, r, f, hm, d, dd, i, dt, ps, u, z, j, jj, pn
-int_keywords: u, z, j, jj, pn
+keywords: e, ee, sv, svv, w, q, qq, qqq, tr, pk, xp, t, v, s, ss, i, sc, r, f, hm, dt, ps, u, z, j, jj, jjj
+int_keywords: u, z, j, jj, jjj
