@@ -35,6 +35,7 @@ The output file consists of two-part, `keyword part` and `memo part`.
     │ ├─ key.py                     <- Store constant keywords tuple
     │ ├─ output.py                  <- Print the composed text
     │ ├─ parse.py                   <- Parse each lines and store the values
+    │ ├─ util.py                    <- Store utility methods
     │ └─ resources
     │   └─ config.yml               <- Settings
     └─ tests                        <- TBU

@@ -1,15 +1,18 @@
 import compose
-import data
 import input
-import output
 import parse
+import print
+from model import data_model
 
 
-# TODO: need to add logging
+# TODO: add deployment settings
+# TODO: add logging
+# TODO: add test
+# TODO: add error handling
 def main():
     # declare model classes
-    parsed_data = data.ParsedData()
-    output_data = data.OutputData()
+    parsed_data = data_model.ParsedData()
+    output_data = data_model.OutputData()
 
     # get input data
     daily_text = input.input_string()
@@ -21,7 +24,7 @@ def main():
     compose.compose_output_text(parsed_data, output_data)
 
     # print composed data
-    output.print_text_as_csv(output_data)
+    print.print_text_as_csv(output_data)
 
 
 if __name__ == "__main__":
