@@ -1,7 +1,7 @@
 import compose
 import input
-import output
 import parse
+import print
 from model import data_model
 
 
@@ -24,7 +24,7 @@ def main():
     compose.compose_output_text(parsed_data, output_data)
 
     # print composed data
-    output.print_text_as_csv(output_data)
+    print.print_text_as_csv(output_data)
 
 
 if __name__ == "__main__":

@@ -2,9 +2,9 @@ from typing import Final
 
 import yaml
 
-import key
 import util
 from model.line_enum import LineType
+from util import keys
 
 with open('resources/config.yml') as f:
     __conf = yaml.safe_load(f)
@@ -113,7 +113,7 @@ def _is_date_line(line: []) -> bool:
 
 # check if current line is a keyword line
 def _is_keyword_line(line: []) -> bool:
-    if len(line) > 1 and line[0] in key.KEYWORDS and util.is_number(line[1]):
+    if len(line) > 1 and line[0] in keys.KEYWORDS and util.is_number(line[1]):
         return True
     else:
         return False
@@ -125,7 +125,7 @@ def _is_other_currency_line(line: []) -> bool:
     keyword = line[0][1:]
 
     if (len(line) > 1 and symbol in symbols
-            and keyword in key.KEYWORDS and util.is_number(line[1])):
+            and keyword in keys.KEYWORDS and util.is_number(line[1])):
         return True
     else:
         return False
@@ -157,7 +157,7 @@ def _parse_keyword_line(line: [], current_date: int, digit_modifier: int,
             break
 
     # TODO: if digit modifier != base digit, add that currency symbol as a prefix
-    if keyword not in key.INT_KEYWORDS:
+    if keyword not in keys.INT_KEYWORDS:
         sum_num /= 10 ** (digit_modifier - 1)  # divide sum by digit_modifier
 
     # since same keyword lines can exist in the same date

@@ -1,11 +1,11 @@
-import key
+from util import keys
 
 
 # compose parsed_data into output_data
 def compose_output_text(parsed_data, output_data) -> []:
     # keyword part
-    _compose_keyword_part(parsed_data.available_keywords, parsed_data.key_data
-                          , parsed_data.key_orig_texts, output_data.keyword_part)
+    _compose_keyword_part(parsed_data.available_keywords, parsed_data.key_data,
+                          parsed_data.key_orig_texts, output_data.keyword_part)
 
     # memo part
     _compose_memo_part(parsed_data.memo_data, output_data.memo_part)
@@ -22,7 +22,7 @@ def _compose_keyword_part(available_keywords, key_data, key_orig_texts, keyword_
         keyword_part[current_date] = [current_date]  # first column is date
 
         # loop by entire KEYWORDS to keep the order or keywords
-        for keyword in key.KEYWORDS:
+        for keyword in keys.KEYWORDS:
             # append data of keywords exist in this month
             if keyword in available_keywords:
                 # check if keyword exists on current date
@@ -43,7 +43,7 @@ def _compose_keyword_part(available_keywords, key_data, key_orig_texts, keyword_
 def _compose_keyword_header_row(available_keywords, keyword_part):
     keyword_part[0] = ['date']  # first column is date
 
-    for keyword in key.KEYWORDS:
+    for keyword in keys.KEYWORDS:
         if keyword in available_keywords:
             keyword_part[0].append(keyword)  # key sum data column
             keyword_part[0].append(keyword + '-detail')  # key orig text data column
