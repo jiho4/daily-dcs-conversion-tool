@@ -2,9 +2,8 @@ from typing import Final
 
 import yaml
 
-import util
 from model.line_enum import LineType
-from util import keys
+from util import keys, util
 
 with open('resources/config.yml') as f:
     __conf = yaml.safe_load(f)
