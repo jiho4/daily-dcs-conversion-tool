@@ -22,7 +22,7 @@ Run the program and paste a whole `daily text` of a month to the console.
 (need a newline at the end of input)
 
 It returns converted data into a `CSV` file.  
-You can manage the setting of the output file in `resources/config.yml`.  
+You can manage the setting of the output file in `resources/config.yaml`.  
 You can also modify the base digit of current currency, or the list of keywords.
 
 The output file consists of two-parts, `keyword part` and `memo part`.
@@ -41,7 +41,8 @@ The output file consists of two-parts, `keyword part` and `memo part`.
     │  │  ├─ data_model.py              <- Store data variables
     │  │  └─ line_enum.py               <- Store types of line
     │  ├─ resources/
-    │  │  └─ config.yml                  <- Settings
+    │  │  └─ config.yaml                <- Configs
+    │  │  └─ log_config.yaml            <- Log configs
     │  └─ util/
     │     ├─ keys.py                    <- Store constant keywords tuple
     │     └─ util.py                    <- Store utility methods

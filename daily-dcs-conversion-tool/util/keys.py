@@ -1,6 +1,6 @@
 import yaml
 
-with open('resources/config.yml') as f:
+with open('resources/config.yaml') as f:
     __conf = yaml.safe_load(f)
 
 # const keywords

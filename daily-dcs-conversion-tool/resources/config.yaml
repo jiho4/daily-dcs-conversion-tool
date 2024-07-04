@@ -1,4 +1,4 @@
-base_digit: 4
+default_currency: jpy
 
 # digit modifiers for each currency / example: 1000 = 4 digits
 digits: { cad: 2, jpy: 4, krw: 5 }

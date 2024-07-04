@@ -1,3 +1,4 @@
+from logging import getLogger
 from typing import Final
 
 import yaml
@@ -5,10 +6,12 @@ import yaml
 from model.line_enum import LineType
 from util import keys, util
 
-with open('resources/config.yml') as f:
+with open('resources/config.yaml') as f:
     __conf = yaml.safe_load(f)
 
-BASE_DIGIT: Final[int] = __conf['base_digit']
+BASE_DIGIT: Final[int] = __conf['digits'][__conf['default_currency']]
+
+logger = getLogger(__name__)
 
 
 # parse a whole text by each line, add data in to parsed_data
@@ -23,7 +26,7 @@ def parse_daily_text(daily_text: [], parsed_data):
     is_initialized: bool = False
 
     # remember whether the previous line was blank line or not
-    prev_line_was_blank: bool = False
+    was_prev_line_blank: bool = False
 
     #####################
     # parse for each line
@@ -34,19 +37,19 @@ def parse_daily_text(daily_text: [], parsed_data):
 
         # check if current line is valid
         _check_validation_of_line(line, len(daily_text),
-                                  line_tracker, current_date, prev_line_was_blank)
+                                  line_tracker, current_date, was_prev_line_blank)
 
         # get current line type
         line_type: LineType = _find_line_type(line)
 
         # blank line
         if line_type == LineType.BLANK_LINE:
-            prev_line_was_blank = True
+            was_prev_line_blank = True
             if current_date == 1:  # if last processed date was 1, then end the loop
                 break
         # date line
         elif line_type == LineType.DATE_LINE:
-            prev_line_was_blank = False
+            was_prev_line_blank = False
             current_date = int(line[0])
 
             if is_initialized is False:  # run only once
@@ -58,29 +61,29 @@ def parse_daily_text(daily_text: [], parsed_data):
                 is_initialized = True
         # keyword line
         elif line_type == LineType.KEYWORD_LINE:
-            prev_line_was_blank = False
+            was_prev_line_blank = False
             _parse_keyword_line(line, current_date, BASE_DIGIT, parsed_data.available_keywords,
                                 parsed_data.key_data, parsed_data.key_orig_texts)
         # other currency keyword line
         elif line_type == LineType.OTHER_CURRENCY_KEYWORD_LINE:
-            prev_line_was_blank = False
+            was_prev_line_blank = False
             digit_modifier: int = _get_digit_modifier(line[0])
             line[0] = line[0][1:]  # remove symbol (the first letter)
             _parse_keyword_line(line, current_date, digit_modifier, parsed_data.available_keywords,
                                 parsed_data.key_data, parsed_data.key_orig_texts)
         # memo line
         elif line_type == LineType.MEMO_LINE:
-            prev_line_was_blank = False
+            was_prev_line_blank = False
             # add to memo_data without any parsing process
             parsed_data.memo_data[current_date].append(line)
         else:
-            raise  # TODO: add unexpected line type exception
+            raise ValueError("Unexpected line type")
 
 
 # check validation and raise an exception when input text data is not valid
 def _check_validation_of_line(line: [], num_of_all_line: int, line_tracker: int,
-                              current_date: int, prev_line_was_blank: bool):
-    if prev_line_was_blank is True and len(line) > 0 and _is_date_line(line) is False:
+                              current_date: int, was_prev_line_blank: bool):
+    if was_prev_line_blank is True and len(line) > 0 and _is_date_line(line) is False:
         raise print_error_log(line, line_tracker, current_date)  # TODO: line after blank line should be date line
     elif line_tracker == num_of_all_line and current_date != 1:
         raise print_error_log(line, line_tracker, current_date)  # TODO: reached EOF but processed date is not 1
@@ -155,7 +158,6 @@ def _parse_keyword_line(line: [], current_date: int, digit_modifier: int,
         else:
             break
 
-    # TODO: if digit modifier != base digit, add that currency symbol as a prefix
     if keyword not in keys.INT_KEYWORDS:
         sum_num /= 10 ** (digit_modifier - 1)  # divide sum by digit_modifier
 
@@ -169,7 +171,6 @@ def _parse_keyword_line(line: [], current_date: int, digit_modifier: int,
         key_orig_texts[current_date][keyword].extend(line)
 
 
-# TODO: separate it to error handling py file
 # print processing data when error occurred
 def print_error_log(line: [], line_tracker: int, current_date: int):
     print("processing line: " + str(line_tracker))
