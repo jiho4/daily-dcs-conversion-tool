@@ -1,0 +1,17 @@
+default_currency: jpy
+
+# digit modifiers for each currency / example: 1000 = 4 digits
+digits: { cad: 2, jpy: 4, krw: 5 }
+
+# currency identifier
+symbols: { $: cad , Y: jpy, ¥: jpy, ₩: krw }
+
+# output csv setting
+output_delimiter: "\t"
+output_directory: ./../output/
+output_base_filename: daily-dcs-converted
+output_filename_time_format: '%Y-%m-%d-%H%M%S'
+
+# define kinds of keywords (including test-only keywords)
+keywords: e, ee, g, u
+int_keywords: u

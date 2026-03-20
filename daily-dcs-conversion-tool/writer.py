@@ -1,10 +1,16 @@
 import csv
+import os
 import os.path
 import time
+from logging import getLogger
 
 import yaml
 
-with open('resources/config.yaml') as f1:
+logger = getLogger(__name__)
+
+_CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resources', 'config.yaml')
+
+with open(_CONFIG_PATH) as f1:
     __conf = yaml.safe_load(f1)
 
 
@@ -29,6 +35,8 @@ def print_text_as_csv(output_data):
         # write memo part to the below keyword part
         _write_memo_part(writer, output_data.memo_part)
 
+    logger.info('Output file written: %s', filename)
+
 
 # write keyword part
 def _write_keyword_part(writer, keyword_part):
@@ -38,12 +46,14 @@ def _write_keyword_part(writer, keyword_part):
 
 # write memo part
 def _write_memo_part(writer, memo_part):
-    current_date = 1
+    if not memo_part:
+        return
+    current_date = memo_part[0][0]
 
     for memo_data_row in memo_part:
         if memo_data_row[0] != current_date:
             # add blank line when date increased
-            writer.writerow('')
+            writer.writerow([])
             current_date = memo_data_row[0]
 
         writer.writerow(memo_data_row)
