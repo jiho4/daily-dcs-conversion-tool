@@ -1,12 +1,28 @@
+import os
+from datetime import datetime
+from logging import getLogger, config
+
+import yaml
+
 import compose
 import input
 import parse
 import print
 from model import data_model
 
+with open('resources/log_config.yaml', 'r') as f:
+    __log_conf = yaml.safe_load(f)
 
-# TODO: add deployment settings
-# TODO: add logging
+log_dir = __log_conf['log_directory']
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+
+__log_conf['handlers']['fileHandler']['filename'] = \
+    log_dir + '/app.log.{}'.format(datetime.now().strftime('%Y%m%d'))
+config.dictConfig(__log_conf)
+logger = getLogger(__name__)
+
+
 # TODO: add test
 # TODO: add error handling
 def main():
@@ -28,4 +44,5 @@ def main():
 
 
 if __name__ == "__main__":
+    logger.info('Application started')
     main()

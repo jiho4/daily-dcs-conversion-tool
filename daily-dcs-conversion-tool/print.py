@@ -4,7 +4,7 @@ import time
 
 import yaml
 
-with open('resources/config.yml') as f1:
+with open('resources/config.yaml') as f1:
     __conf = yaml.safe_load(f1)
 
 

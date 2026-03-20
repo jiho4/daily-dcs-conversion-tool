@@ -4,6 +4,7 @@
 # parse #
 two or more consecutive blank lines before initialized is accepted
 two or more consecutive blank lines after initialized should be error
+only 0 should be 0, not a text
 
 # util #
 # util > is_number()
