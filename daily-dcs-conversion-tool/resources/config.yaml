@@ -13,5 +13,5 @@ output_base_filename: daily-dcs-converted
 output_filename_time_format: '%Y-%m-%d-%H%M%S'
 
 # define kinds of keywords
-keywords: e, ee, sv, svv, w, q, qq, qqq, tr, pk, xp, t, v, s, ss, i, sc, r, f, hm, dt, ps, u, z, j, jj, jjj
-int_keywords: u, z, j, jj, jjj
+keywords: e, ee, g, sv, svv, svl, w, q, qq, qqq, tr, pk, t, s, ss, i, sc, r, f, hm, dt, ps, j
+int_keywords: j
