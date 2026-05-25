@@ -41,7 +41,7 @@ def main():
     compose.compose_output_text(parsed_data, output_data)
 
     # print composed data
-    writer.print_text_as_csv(output_data)
+    writer.write_output(output_data)
 
 
 if __name__ == "__main__":
