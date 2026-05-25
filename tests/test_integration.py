@@ -1,5 +1,5 @@
 """
-Integration tests: full pipeline from raw input lines to delimited output.
+Integration tests: full pipeline from raw input lines to DSV output.
 Each test prepares input lines, runs parse → compose → write, reads the
 output file back, and compares it line-by-line against the expected output
 built with the same dsv writer settings.
@@ -16,7 +16,7 @@ from model.data_model import ParsedData, OutputData
 from parse import parse_daily_text
 from compose import compose_output_text
 from writer import write_output
-from util import keys
+from util import keywords
 
 TEST_CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'test_config.yaml')
 SEPARATOR = ['====', '========']
@@ -30,7 +30,7 @@ def _run_pipeline(input_lines, tmp_path, monkeypatch):
     conf = next(v for v in vars(writer_module).values()
                 if isinstance(v, dict) and 'output_directory' in v)
     monkeypatch.setitem(conf, 'output_directory', str(tmp_path) + os.sep)
-    monkeypatch.setitem(conf, 'output_file_extension', 'tsv')
+    monkeypatch.setitem(conf, 'output_file_extension', 'csv')
 
     parsed_data = ParsedData()
     output_data = OutputData()
@@ -38,7 +38,7 @@ def _run_pipeline(input_lines, tmp_path, monkeypatch):
     compose_output_text(parsed_data, output_data)
     write_output(output_data)
 
-    files = list(tmp_path.glob('*.tsv'))
+    files = list(tmp_path.glob('*.csv'))
     assert len(files) == 1
     return files[0].read_text(encoding='utf-8')
 
@@ -59,7 +59,7 @@ def _parse_dsv_lines(content, delimiter='\t'):
 
 def _all_key_row(date, values):
     """Build one data row for all_key_data_part. values: {kw: value}"""
-    return [date] + [values.get(kw, '') for kw in keys.KEYWORDS]
+    return [date] + [values.get(kw, '') for kw in keywords.KEYWORDS]
 
 
 def _detail_row(date, available, values, details):
@@ -94,7 +94,7 @@ class TestBasicTwoDays:
 
     INPUT = ['2', 'e 2000', 'g 1000', '', '1', 'e 1000', 'ee 5000', '']
 
-    ALL_KWS = list(keys.KEYWORDS)
+    ALL_KWS = list(keywords.KEYWORDS)
     AVAILABLE = [kw for kw in ALL_KWS if kw in ('e', 'ee', 'g')]
 
     VALUES  = {1: {'e': 1, 'ee': 5}, 2: {'e': 2, 'g': 1}}
@@ -125,7 +125,7 @@ class TestBasicTwoDays:
     def test_all_key_data_part_header_has_all_keywords(self, tmp_path, monkeypatch):
         actual = _run_pipeline(self.INPUT, tmp_path, monkeypatch)
         header_row = _parse_dsv_lines(actual)[0]
-        for kw in keys.KEYWORDS:
+        for kw in keywords.KEYWORDS:
             assert kw in header_row
 
     def test_keyword_detail_part_only_has_available_keywords(self, tmp_path, monkeypatch):
@@ -137,7 +137,7 @@ class TestBasicTwoDays:
         assert 'e' in detail_header
         assert 'ee' in detail_header
         assert 'g' in detail_header
-        for kw in keys.KEYWORDS:
+        for kw in keywords.KEYWORDS:
             if kw not in ('e', 'ee', 'g'):
                 assert kw not in detail_header
                 assert kw + '-detail' not in detail_header
@@ -163,7 +163,7 @@ class TestWithMemo:
 
     INPUT = ['2', 'lunch out', '', '1', 'e 3000', 'dinner note', '']
 
-    ALL_KWS = list(keys.KEYWORDS)
+    ALL_KWS = list(keywords.KEYWORDS)
     AVAILABLE = [kw for kw in ALL_KWS if kw in ('e',)]
     VALUES  = {1: {'e': 3}, 2: {}}
     DETAILS = {1: {'e': '3000'}, 2: {}}

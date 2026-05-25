@@ -5,7 +5,7 @@ from typing import Final, Optional
 import yaml
 
 from model.line_enum import LineType
-from util import keys, util
+from util import keywords, utils
 
 _CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resources', 'config.yaml')
 
@@ -24,7 +24,7 @@ def _load_config(config_path: str):
 
 
 # parse a whole text by each line, add data in to parsed_data
-def parse_daily_text(daily_text: [], parsed_data, config_path: Optional[str] = None):
+def parse_daily_text(daily_text: list, parsed_data, config_path: Optional[str] = None):
     # Load config
     conf = _load_config(config_path) if config_path else __conf
     base_digit = conf['digits'][conf['default_currency']]
@@ -96,39 +96,39 @@ def parse_daily_text(daily_text: [], parsed_data, config_path: Optional[str] = N
 
 
 # check validation and raise an exception when input text data is not valid
-def _check_validation_of_line(line: [], num_of_all_line: int, line_tracker: int,
+def _check_validation_of_line(line: list, num_of_all_line: int, line_tracker: int,
                               current_date: int, was_prev_line_blank: bool, is_initialized: bool):
-    if was_prev_line_blank is True and is_initialized is True and len(line) == 0:
+    if was_prev_line_blank and is_initialized and len(line) == 0:
         raise print_error_log(line, line_tracker, current_date, "consecutive blank lines after init not allowed")
-    elif was_prev_line_blank is True and len(line) > 0 and _is_date_line(line) is False:
+    elif was_prev_line_blank and len(line) > 0 and not _is_date_line(line):
         raise print_error_log(line, line_tracker, current_date, "line after blank line should be date line")
     elif line_tracker == num_of_all_line and current_date != 1 and not (_is_date_line(line) and int(line[0]) == 1):
         raise print_error_log(line, line_tracker, current_date, "reached EOF but processed date is not 1")
-    elif _is_date_line(line) is True and current_date != 0 and int(line[0]) != current_date - 1:
+    elif _is_date_line(line) and current_date != 0 and int(line[0]) != current_date - 1:
         raise print_error_log(line, line_tracker, current_date, "date should be decreasing by 1")
 
 
 # find the type of current line
-def _find_line_type(line: [], conf=None, keywords=None) -> LineType:
+def _find_line_type(line: list, conf=None, kw=None) -> LineType:
     if conf is None:
         conf = __conf
-    if keywords is None:
-        keywords = keys.KEYWORDS
+    if kw is None:
+        kw = keywords.KEYWORDS
 
     if len(line) == 0:
         return LineType.BLANK_LINE
     elif _is_date_line(line):
         return LineType.DATE_LINE
-    elif _is_keyword_line(line, keywords):
+    elif _is_keyword_line(line, kw):
         return LineType.KEYWORD_LINE
-    elif _is_other_currency_line(line, conf, keywords):
+    elif _is_other_currency_line(line, conf, kw):
         return LineType.OTHER_CURRENCY_KEYWORD_LINE
     else:
         return LineType.MEMO_LINE
 
 
 # check if current line is a date line
-def _is_date_line(line: []) -> bool:
+def _is_date_line(line: list) -> bool:
     if len(line) == 1 and line[0].isdecimal():
         return True
     else:
@@ -136,27 +136,29 @@ def _is_date_line(line: []) -> bool:
 
 
 # check if current line is a keyword line
-def _is_keyword_line(line: [], keywords=None) -> bool:
-    if keywords is None:
-        keywords = keys.KEYWORDS
-    if len(line) > 1 and line[0] in keywords and util.is_number(line[1]):
+def _is_keyword_line(line: list, kw=None) -> bool:
+    if kw is None:
+        kw = keywords.KEYWORDS
+    if len(line) > 1 and line[0] in kw and utils.is_number(line[1]):
         return True
     else:
         return False
 
 
-def _is_other_currency_line(line: [], conf=None, keywords=None) -> bool:
+def _is_other_currency_line(line: list, conf=None, kw=None) -> bool:
     if conf is None:
         conf = __conf
-    if keywords is None:
-        keywords = keys.KEYWORDS
+    if kw is None:
+        kw = keywords.KEYWORDS
 
     symbols = conf['symbols']
+    if len(line) == 0 or len(line[0]) < 2:
+        return False
     symbol = line[0][0]
     keyword = line[0][1:]
 
     if (len(line) > 1 and symbol in symbols
-            and keyword in keywords and util.is_number(line[1])):
+            and keyword in kw and utils.is_number(line[1])):
         return True
     else:
         return False
@@ -175,10 +177,10 @@ def _get_digit_modifier(keyword: str, conf=None) -> int:
 
 
 # parse keyword line and put the data into parsed_data
-def _parse_keyword_line(line: [], current_date: int, digit_modifier: int,
-                        available_keywords: {}, key_data: {}, key_orig_texts: {}, int_keywords=None):
+def _parse_keyword_line(line: list, current_date: int, digit_modifier: int,
+                        available_keywords: set, key_data: dict, key_orig_texts: dict, int_keywords=None):
     if int_keywords is None:
-        int_keywords = keys.INT_KEYWORDS
+        int_keywords = keywords.INT_KEYWORDS
 
     keyword = line[0]
     line = line[1:]
@@ -189,7 +191,7 @@ def _parse_keyword_line(line: [], current_date: int, digit_modifier: int,
 
     # add to sum_num until it reaches to the word
     for word in line:
-        if util.is_number(word):
+        if utils.is_number(word):
             sum_num += float(word)
         else:
             break
@@ -209,8 +211,8 @@ def _parse_keyword_line(line: [], current_date: int, digit_modifier: int,
 
 # print processing data when error occurred and return an exception to raise
 def print_error_log(line: [], line_tracker: int, current_date: int, message: str) -> ValueError:
-    logger.error("processing line: " + str(line_tracker))
-    logger.error("processing date: " + str(current_date))
-    logger.error("processing line data: " + ' '.join(line))
-    logger.error("error reason: " + message)
+    logger.error("processing line: %s", line_tracker)
+    logger.error("processing date: %s", current_date)
+    logger.error("processing line data: %s", ' '.join(line))
+    logger.error("error reason: %s", message)
     return ValueError("Invalid input at line {}: {} - {}".format(line_tracker, ' '.join(line), message))

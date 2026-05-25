@@ -7,7 +7,7 @@ digits: { cad: 2, jpy: 4, krw: 5 }
 symbols: { $: cad , Y: jpy, ¥: jpy, ₩: krw }
 
 # output file setting
-output_delimiter: "\t"  # it returns error when setting value as '\t' or just \t
+output_delimiter: \t
 output_directory: ./../output/
 output_base_filename: daily-dcs-converted
 output_file_extension: tsv

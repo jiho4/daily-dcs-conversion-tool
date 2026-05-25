@@ -1,8 +1,8 @@
-from util import keys
+from util import keywords
 
 
 # compose parsed_data into output_data
-def compose_output_text(parsed_data, output_data) -> []:
+def compose_output_text(parsed_data, output_data) -> None:
     keyword_value = {}   # {kw: {date: value}} — available keywords only
     keyword_detail = {}  # {kw: {date: detail_text}} — available keywords only
     num_dates = len(parsed_data.key_data)
@@ -26,17 +26,17 @@ def compose_output_text(parsed_data, output_data) -> []:
 
 # compose no-detail part: all keywords as columns, values only
 def _compose_no_detail_part(available_keywords, keyword_value, num_dates, no_detail_part):
-    no_detail_part.append(['date'] + list(keys.KEYWORDS))
+    no_detail_part.append(['date'] + list(keywords.KEYWORDS))
     # one row per date: fill blank for keywords not present this month
     for date in range(1, num_dates + 1):
         row = [date] + [keyword_value[kw].get(date, '') if kw in available_keywords else ''
-                        for kw in keys.KEYWORDS]
+                        for kw in keywords.KEYWORDS]
         no_detail_part.append(row)
 
 
 # compose keyword-detail part: available keywords only, with value and detail columns interleaved
 def _compose_keyword_detail_part(available_keywords, keyword_value, keyword_detail, num_dates, keyword_detail_part):
-    available = [kw for kw in keys.KEYWORDS if kw in available_keywords]
+    available = [kw for kw in keywords.KEYWORDS if kw in available_keywords]
     header = ['date'] + [col for kw in available for col in (kw, kw + '-detail')]
     keyword_detail_part.append(header)
     # one row per date: interleave value and detail columns for each available keyword
