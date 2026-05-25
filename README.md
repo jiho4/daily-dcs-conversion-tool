@@ -2,13 +2,13 @@
 
 *created: 2022/03/15*
 
-A personal CLI tool that converts daily transaction text logs into formatted CSV reports, designed to speed up end-of-month settlement processing.
+A personal CLI tool that converts daily transaction text logs into formatted delimited reports, designed to speed up end-of-month settlement processing.
 
 ---
 
 ## Description
 
-This tool parses a month's worth of daily transaction text, accumulates values by keyword and date, and writes the result to a tab-separated CSV file. It supports multiple currencies and separates transactional data from memo lines in the output.
+This tool parses a month's worth of daily transaction text, accumulates values by keyword and date, and writes the result to a delimited file. It supports multiple currencies and separates transactional data from memo lines in the output. The output delimiter and file extension are configurable (default: tab-separated, `.tsv`).
 
 ---
 
@@ -37,11 +37,13 @@ python -m daily-dcs-conversion-tool
 
 Paste the entire month's daily text into the console, then press `Cmd+D` (macOS/Linux) or `Ctrl+Z` (Windows) to submit.
 
-The tool writes a CSV file to the `output/` directory:
+The tool writes a file to the `output/` directory:
 
 ```
-output/daily-dcs-converted-YYYY-MM-DD-HHMMSS.csv
+output/daily-dcs-converted-YYYY-MM-DD-HHMMSS.tsv
 ```
+
+The file extension is configurable via `output_file_extension` in `config.yaml`.
 
 ---
 
@@ -52,7 +54,7 @@ Input is plain text with the following structure. Dates must appear in **descend
 ```
 31
 e 5000
-sv 1200 800
+g 1200 800
 some memo note
 
 30
@@ -79,21 +81,29 @@ e 1000
 
 ## Output Format
 
-The CSV uses tab (`\t`) as delimiter and has two sections:
+The output uses configured delimiter and has three sections separated by `====` horizontal rules:
 
-**Keyword part** — one row per day, columns for each keyword's sum and original text detail:
+**Section 1 — All-keyword data** — one row per day, one column per configured keyword (values only, no detail). Keywords with no data appear as blank columns.
 
-| date | e | e-detail | sv | sv-detail | ... |
-|---|---|---|---|---|---|
-| 1 | 1.0 | 1000 | | | |
-| 2 | 3.5 | 2000 1500 | 2.0 | 1200 800 | |
+| date | e | f | g | ... |
+|---|---|---|---|---|
+| 1 | 1 | 5 | | |
+| 2 | 2 | | 10 | |
 
-**Memo part** — two columns (date, memo text), grouped by date with blank lines between groups:
+**Section 2 — Keyword detail** — one row per day, columns for each keyword that appeared in the input, interleaved with its original text detail. Keywords absent from the input are omitted entirely.
+
+| date | e | e-detail | g | g-detail |
+|---|---|---|---|---|
+| 1 | 1 | 1000 sample | | |
+| 2 | 2 | 2000 detail1 | 1 | 1000 detail2 |
+
+**Section 3 — Memo** — two columns (date, memo text), grouped by date with blank lines between groups. Dates with no memo are omitted:
 
 ```
-1	some note here
-2	another memo
-2	second line for day 2
+3	some note here
+
+5	another memo
+5	second line for day 2
 ```
 
 ---
@@ -102,15 +112,16 @@ The CSV uses tab (`\t`) as delimiter and has two sections:
 
 All settings are in `daily-dcs-conversion-tool/resources/config.yaml`:
 
-| Key | Default | Description |
+| Key | Example | Description |
 |---|---|---|
 | `default_currency` | `jpy` | Default digit modifier currency |
 | `digits` | `{cad: 2, jpy: 4, krw: 5}` | Digit count per currency (used as divisor) |
 | `symbols` | `{$: cad, Y: jpy, ¥: jpy, ₩: krw}` | Currency symbol mappings |
-| `keywords` | _(28 entries)_ | Recognised keyword list |
-| `int_keywords` | `u, z, j` | Keywords treated as integers (not divided) |
-| `output_directory` | `../output/` | Output CSV directory |
-| `output_delimiter` | `\t` | CSV column delimiter |
+| `keywords` | e, f, g, ... | Recognised keyword list |
+| `int_keywords` | f, g, ... | Keywords treated as integers |
+| `output_directory` | `../output/` | Output file directory |
+| `output_delimiter` | `\t` | Column delimiter |
+| `output_file_extension` | `tsv` | Output file extension |
 
 ---
 
@@ -151,7 +162,7 @@ daily-dcs-conversion-tool/
 │   ├── reader.py                <- Reads stdin input into line list
 │   ├── parse.py                 <- Parses and validates each line
 │   ├── compose.py               <- Structures parsed data for output
-│   ├── writer.py                <- Writes output as CSV
+│   ├── writer.py                <- Writes output as delimited file
 │   ├── model/
 │   │   ├── data_model.py        <- ParsedData and OutputData classes
 │   │   └── line_enum.py         <- LineType enum
@@ -163,5 +174,8 @@ daily-dcs-conversion-tool/
 │       └── util.py              <- Helper functions (is_number)
 └── tests/
     ├── test_parse.py
-    └── test_util.py
+    ├── test_util.py
+    ├── test_compose.py
+    ├── test_writer.py
+    └── test_integration.py
 ```

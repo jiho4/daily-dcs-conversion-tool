@@ -3,55 +3,53 @@ from util import keys
 
 # compose parsed_data into output_data
 def compose_output_text(parsed_data, output_data) -> []:
-    # keyword part
-    _compose_keyword_part(parsed_data.available_keywords, parsed_data.key_data,
-                          parsed_data.key_orig_texts, output_data.keyword_part)
+    keyword_value = {}   # {kw: {date: value}} — available keywords only
+    keyword_detail = {}  # {kw: {date: detail_text}} — available keywords only
+    num_dates = len(parsed_data.key_data)
 
-    # memo part
+    # flatten key_data and key_orig_texts into keyword_value and keyword_detail dicts
+    for current_date in range(1, num_dates + 1):
+        # collect each keyword's sum and original text for the current date
+        for keyword in parsed_data.key_data[current_date]:
+            sum_data = parsed_data.key_data[current_date][keyword]
+            if sum_data.is_integer():
+                sum_data = int(sum_data)
+            keyword_value.setdefault(keyword, {})[current_date] = sum_data
+            keyword_detail.setdefault(keyword, {})[current_date] = ' '.join(
+                parsed_data.key_orig_texts[current_date][keyword])
+
+    _compose_no_detail_part(parsed_data.available_keywords, keyword_value, num_dates, output_data.all_key_data_part)
+    _compose_keyword_detail_part(parsed_data.available_keywords, keyword_value, keyword_detail, num_dates,
+                                 output_data.keyword_detail_part)
     _compose_memo_part(parsed_data.memo_data, output_data.memo_part)
 
 
-# compose keyword part
-def _compose_keyword_part(available_keywords, key_data, key_orig_texts, keyword_part):
-    # first, set a header row
-    _compose_keyword_header_row(available_keywords, keyword_part)
-
-    # TODO: add error handling and logging
-    # iterate by date (each row consists of data for each date)
-    for current_date in range(1, len(key_data) + 1):
-        keyword_part[current_date] = [current_date]  # first column is date
-
-        # loop by entire KEYWORDS to keep the order or keywords
-        for keyword in keys.KEYWORDS:
-            # append data of keywords exist in this month
-            if keyword in available_keywords:
-                # check if keyword exists on current date
-                if keyword in key_data[current_date]:
-                    sum_data = key_data[current_date][keyword]
-                    if sum_data.is_integer():
-                        sum_data = int(sum_data)
-
-                    keyword_part[current_date].append(sum_data)
-                    keyword_part[current_date].append(' '.join(key_orig_texts[current_date][keyword]))
-                # keyword does not exist on current date
-                else:
-                    keyword_part[current_date].append('')
-                    keyword_part[current_date].append('')  # append blank twice
+# compose no-detail part: all keywords as columns, values only
+def _compose_no_detail_part(available_keywords, keyword_value, num_dates, no_detail_part):
+    no_detail_part.append(['date'] + list(keys.KEYWORDS))
+    # one row per date: fill blank for keywords not present this month
+    for date in range(1, num_dates + 1):
+        row = [date] + [keyword_value[kw].get(date, '') if kw in available_keywords else ''
+                        for kw in keys.KEYWORDS]
+        no_detail_part.append(row)
 
 
-# compose a header row of keyword part
-def _compose_keyword_header_row(available_keywords, keyword_part):
-    keyword_part[0] = ['date']  # first column is date
-
-    for keyword in keys.KEYWORDS:
-        if keyword in available_keywords:
-            keyword_part[0].append(keyword)  # key sum data column
-            keyword_part[0].append(keyword + '-detail')  # key orig text data column
+# compose keyword-detail part: available keywords only, with value and detail columns interleaved
+def _compose_keyword_detail_part(available_keywords, keyword_value, keyword_detail, num_dates, keyword_detail_part):
+    available = [kw for kw in keys.KEYWORDS if kw in available_keywords]
+    header = ['date'] + [col for kw in available for col in (kw, kw + '-detail')]
+    keyword_detail_part.append(header)
+    # one row per date: interleave value and detail columns for each available keyword
+    for date in range(1, num_dates + 1):
+        row = [date] + [x for kw in available
+                        for x in (keyword_value[kw].get(date, ''), keyword_detail[kw].get(date, ''))]
+        keyword_detail_part.append(row)
 
 
 # compose memo part
 def _compose_memo_part(memo_data, memo_part):
+    # iterate each date that has memo entries
     for current_date in memo_data.keys():
+        # join multi-token memo lines into a single string per row
         for memo_line in memo_data[current_date]:
-            # memo_part has only two columns (date, memo)
             memo_part.append((current_date, ' '.join(memo_line)))

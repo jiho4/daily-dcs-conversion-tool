@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-04-13
+
+### Added
+
+- New `all_key_data_part` output section (first section): all configured keywords as columns, values only, no detail — keywords with no data appear as blank columns rather than being omitted
+- Configurable output file extension via `output_file_extension` in `config.yaml` (production default: `tsv`)
+- New test suites: `tests/test_compose.py` (13 tests), `tests/test_writer.py` (8 tests), `tests/test_integration.py` (5 end-to-end tests)
+
+### Changed
+
+- Output now has two keyword sections separated by `====` horizontal rules:
+  1. All-keyword section (values only, all configured keywords shown)
+  2. Keyword-detail section (available keywords only, with original text detail)
+- `OutputData.keyword_part` replaced by `all_key_data_part` and `keyword_detail_part` (separate lists of ready-to-print rows)
+- `compose.py` now builds keyword-keyed intermediate dicts (`keyword_value`, `keyword_detail`) before composing output rows; `available_keywords` drives which keywords appear in the detail section
+- `writer.print_text_as_csv` renamed to `writer.write_output`
+- `writer._write_keyword_part` replaced by `writer._write_part` (generic row-list writer)
+- Output file extension changed from hardcoded `.csv` to configurable `output_file_extension` (default `tsv`)
+
+### Fixed
+
+- `AttributeError` crash in `parse.py` and `util/keys.py` when `int_keywords` is `null` in config
+
 ## [1.3.0] - 2026-03-20
 
 ### Added

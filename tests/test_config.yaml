@@ -6,10 +6,11 @@ digits: { cad: 2, jpy: 4, krw: 5 }
 # currency identifier
 symbols: { $: cad , Y: jpy, ¥: jpy, ₩: krw }
 
-# output csv setting
+# output file setting
 output_delimiter: "\t"
 output_directory: ./../output/
 output_base_filename: daily-dcs-converted
+output_file_extension: tsv
 output_filename_time_format: '%Y-%m-%d-%H%M%S'
 
 # define kinds of keywords (including test-only keywords)

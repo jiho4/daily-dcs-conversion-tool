@@ -29,7 +29,7 @@ def parse_daily_text(daily_text: [], parsed_data, config_path: Optional[str] = N
     conf = _load_config(config_path) if config_path else __conf
     base_digit = conf['digits'][conf['default_currency']]
     keywords = tuple(conf['keywords'].split(', '))
-    int_keywords = tuple(conf['int_keywords'].split(', '))
+    int_keywords = tuple(conf['int_keywords'].split(', ')) if conf.get('int_keywords') else ()
 
     # remember the current line of input string
     line_tracker: int = 0

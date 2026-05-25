@@ -6,12 +6,13 @@ digits: { cad: 2, jpy: 4, krw: 5 }
 # currency identifier
 symbols: { $: cad , Y: jpy, ¥: jpy, ₩: krw }
 
-# output csv setting
-output_delimiter: "\t"  # it returns error when using '\t' or just \t
+# output file setting
+output_delimiter: "\t"  # it returns error when setting value as '\t' or just \t
 output_directory: ./../output/
 output_base_filename: daily-dcs-converted
+output_file_extension: tsv
 output_filename_time_format: '%Y-%m-%d-%H%M%S'
 
 # define kinds of keywords
-keywords: e, ee, g, sv, svv, svl, w, q, qq, qqq, tr, pk, t, s, ss, i, sc, r, f, hm, dt, ps, j
-int_keywords: j
+keywords: ee, e, g, sv, svv, svl, w, q, qq, qqq, tr, pk, t, s, ss, i, sc, r, f, hm, dt, ps
+int_keywords:  # currently no int_keywords applicable

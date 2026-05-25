@@ -8,7 +8,7 @@ with open(_CONFIG_PATH) as f:
 
 # const keywords
 KEYWORDS = tuple(__conf['keywords'].split(', '))
-INT_KEYWORDS = tuple(__conf['int_keywords'].split(', '))
+INT_KEYWORDS = tuple(__conf['int_keywords'].split(', ')) if __conf.get('int_keywords') else ()
 
 
 def load_keywords_from_config(config_path: str):
