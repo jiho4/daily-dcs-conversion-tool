@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'daily-dcs-conv
 
 from model.data_model import ParsedData, OutputData
 from compose import compose_output_text
-from util import keys
+from util import keywords
 
 
 def _make_parsed_data(key_data, key_orig_texts=None, available_keywords=None, memo_data=None):
@@ -30,7 +30,7 @@ class TestAllKeyDataPart:
         output = OutputData()
         compose_output_text(parsed, output)
 
-        assert output.all_key_data_part[0] == ['date'] + list(keys.KEYWORDS)
+        assert output.all_key_data_part[0] == ['date'] + list(keywords.KEYWORDS)
 
     def test_no_detail_columns_in_header(self):
         parsed = _make_parsed_data(
@@ -65,7 +65,7 @@ class TestAllKeyDataPart:
 
         row = output.all_key_data_part[1]
         header = output.all_key_data_part[0]
-        for kw in keys.KEYWORDS:
+        for kw in keywords.KEYWORDS:
             if kw != 'e':
                 assert row[header.index(kw)] == ''
 

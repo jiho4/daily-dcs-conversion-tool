@@ -5,8 +5,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'daily-dcs-conv
 
 import pytest
 from model.data_model import ParsedData
-from parse import parse_daily_text, _find_line_type, _is_date_line, _is_keyword_line
+from parse import parse_daily_text, _find_line_type, _is_date_line, _is_keyword_line, _is_other_currency_line
 from model.line_enum import LineType
+from util.keywords import load_keywords_from_config
 
 # Test config path
 TEST_CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'test_config.yaml')
@@ -131,3 +132,36 @@ class TestParseDailyText:
         parsed = ParsedData()
         with pytest.raises(ValueError):
             parse_daily_text(lines, parsed, TEST_CONFIG_PATH)
+
+
+# ---------------------------------------------------------------------------
+# _is_other_currency_line — guard cases
+# ---------------------------------------------------------------------------
+
+class TestIsOtherCurrencyLine:
+    def test_empty_line_returns_false(self):
+        assert _is_other_currency_line([]) is False
+
+    def test_single_char_token_returns_false(self):
+        # line[0] has no keyword after the symbol
+        assert _is_other_currency_line(['$']) is False
+
+    def test_valid_currency_line_returns_true(self):
+        assert _is_other_currency_line(['$e', '200']) is True
+
+
+# ---------------------------------------------------------------------------
+# load_keywords_from_config — missing int_keywords key
+# ---------------------------------------------------------------------------
+
+class TestLoadKeywordsFromConfig:
+    def test_missing_int_keywords_returns_empty_tuple(self, tmp_path):
+        config_file = tmp_path / 'config.yaml'
+        config_file.write_text('keywords: e, ee, g\n')
+        keywords, int_keywords = load_keywords_from_config(str(config_file))
+        assert keywords == ('e', 'ee', 'g')
+        assert int_keywords == ()
+
+    def test_present_int_keywords_returned(self):
+        keywords, int_keywords = load_keywords_from_config(TEST_CONFIG_PATH)
+        assert 'u' in int_keywords

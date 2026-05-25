@@ -19,8 +19,7 @@ log_dir = __log_conf['log_directory']
 if not os.path.exists(log_dir):
     os.makedirs(log_dir)
 
-__log_conf['handlers']['fileHandler']['filename'] = \
-    log_dir + '/app.log.{}'.format(datetime.now().strftime('%Y'))
+__log_conf['handlers']['fileHandler']['filename'] = f"{log_dir}/app.log.{datetime.now().strftime('%Y')}"
 config.dictConfig(__log_conf)
 logger = getLogger(__name__)
 

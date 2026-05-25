@@ -3,7 +3,7 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'daily-dcs-conversion-tool'))
 
-from util.util import is_number
+from util.utils import is_number
 
 
 class TestIsNumber:

@@ -5,7 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.4.0] - 2026-04-13
+## [1.4.1] - 2026-05-25
+
+### Added
+
+- Added `CALUDE.md` file with a simple development guidelines
+
+### Changed
+
+- Renamed `keys.py`→`keywords.py`, `util.py`→`utils.py`, `test_util.py`→`test_utils.py`, and updated all imports accordingly
+- Cleaned up `.gitignore`: removed irrelevant sections and reorganized into simpler categories
+
+### Fixed
+
+- `output_delimiter` in `config.yaml` now works with any YAML quoting style (`"\t"`, `'\t'`, or unquoted `\t`) — escape sequences are decoded after config load
+- `IndexError` in `_is_other_currency_line` when `line` is empty or `line[0]` has no keyword after the symbol — added early guard
+- `KeyError` in `load_keywords_from_config` when `int_keywords` is absent from config — now returns empty tuple consistent with module-level behaviour
+- Logger calls in `print_error_log` changed from string concatenation to lazy `%s` formatting
+- Return type annotation on `compose_output_text` corrected from `-> []` to `-> None`
+- f-string used consistently for filename construction in `__main__.py` and `writer.py`
+- Bare `[]` and `{}` type hints in `parse.py` replaced with `list`, `dict`, and `set`
+- `is True` / `is False` comparisons in `_check_validation_of_line` replaced with idiomatic boolean expressions
+
+## [1.4.0] - 2026-04-13 (NOT RELEASED)
 
 ### Added
 

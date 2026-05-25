@@ -120,7 +120,7 @@ All settings are in `daily-dcs-conversion-tool/resources/config.yaml`:
 | `keywords` | e, f, g, ... | Recognised keyword list |
 | `int_keywords` | f, g, ... | Keywords treated as integers |
 | `output_directory` | `../output/` | Output file directory |
-| `output_delimiter` | `\t` | Column delimiter |
+| `output_delimiter` | `\t` | Column delimiter — escape sequences are supported regardless of YAML quoting style (`"\t"`, `'\t'`, or `\t` all produce a tab) |
 | `output_file_extension` | `tsv` | Output file extension |
 
 ---
@@ -170,12 +170,12 @@ daily-dcs-conversion-tool/
 │   │   ├── config.yaml          <- Main configuration
 │   │   └── log_config.yaml      <- Logging configuration
 │   └── util/
-│       ├── keys.py              <- Keyword constants loaded from config
-│       └── util.py              <- Helper functions (is_number)
+│       ├── keywords.py          <- Keyword constants loaded from config
+│       └── utils.py             <- Helper functions (is_number)
 └── tests/
     ├── test_parse.py
-    ├── test_util.py
     ├── test_compose.py
     ├── test_writer.py
+    ├── test_utils.py
     └── test_integration.py
 ```

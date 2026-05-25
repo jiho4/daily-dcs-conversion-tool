@@ -16,5 +16,5 @@ def load_keywords_from_config(config_path: str):
     with open(config_path) as f:
         conf = yaml.safe_load(f)
     keywords = tuple(conf['keywords'].split(', '))
-    int_keywords = tuple(conf['int_keywords'].split(', '))
+    int_keywords = tuple(conf['int_keywords'].split(', ')) if conf.get('int_keywords') else ()
     return keywords, int_keywords

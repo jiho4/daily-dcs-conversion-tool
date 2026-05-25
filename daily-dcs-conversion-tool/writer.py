@@ -13,10 +13,13 @@ _CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resourc
 with open(_CONFIG_PATH) as f1:
     __conf = yaml.safe_load(f1)
 
+# decode escape sequences so the delimiter works regardless of quoting style in config.yaml
+__conf['output_delimiter'] = __conf['output_delimiter'].encode('raw_unicode_escape').decode('unicode_escape')
+
 
 # write output_data into a delimited file
 def write_output(output_data):
-    filename = __conf['output_base_filename'] + '-' + time.strftime(__conf['output_filename_time_format']) + '.' + __conf['output_file_extension']
+    filename = f"{__conf['output_base_filename']}-{time.strftime(__conf['output_filename_time_format'])}.{__conf['output_file_extension']}"
     path = __conf['output_directory'] + filename
 
     # create output directory if it does not exist
